@@ -1,0 +1,21 @@
+{
+  "name": "expense-exorcist",
+  "version": "1.0.0",
+  "description": "Expense Exorcist: a horror story where every demon is an unreviewed expense, and your choices tag the real ledger.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@google/genai": "^1.0.0",
+    "express": "^4.21.0",
+    "express-rate-limit": "^7.4.0",
+    "google-auth-library": "^10.0.0",
+    "helmet": "^8.0.0"
+  }
+}

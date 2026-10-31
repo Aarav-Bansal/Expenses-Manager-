@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0708">
+  <meta name="description" content="A horror story where every demon is an unreviewed expense. Your choices tag the real ledger.">
+  <title>Expense Exorcist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Metamorphous&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="frame">
+<div class="panel">
+  <header class="top">
+    <svg class="logo" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+      <path d="M24 3 29 17 44 17 32 26 37 41 24 32 11 41 16 26 4 17 19 17Z" fill="#b3202c"/>
+      <path d="M24 12v22M17 19h14" stroke="#f3e9d2" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <h1>Expense</h1>
+      <p class="lede">Manage your expenses by slaying the Demons. </p>
+    </div>
+  </header>
+
+  <main>
+    <section id="setup" class="split" aria-labelledby="setup-h">
+      <div class="card">
+        <h2 id="setup-h">Summon the ledger</h2>
+        <button id="sample" type="button" class="primary">Play with the sample ledger</button>
+        <label for="file">Or upload an expense CSV (merchant, amount, optional date and note)</label>
+        <input id="file" type="file" accept=".csv,text/csv">
+        <label for="currency">Currency</label>
+        <select id="currency">
+          <option value="USD">US dollar ($)</option>
+          <option value="INR">Indian rupee (₹)</option>
+          <option value="EUR">Euro (€)</option>
+          <option value="GBP">British pound (£)</option>
+        </select>
+        <label class="check"><input id="calm" type="checkbox"> Calm mode (no flicker or animation)</label>
+        <details id="sheetBox" hidden>
+          <summary>Connect a Google Sheet</summary>
+          <div class="stack">
+            <p class="hint">Your sheet needs the header columns <code>Merchant</code>, <code>Amount</code>, <code>Category</code> and <code>Status</code>. Rows with a blank Status become demons. Optional: <code>Date</code>, <code>Note</code>, <code>Reviewed At</code>. <span id="shareHint"></span></p>
+            <label for="sheet">Sheet link or ID</label>
+            <input id="sheet" type="text" autocomplete="off" spellcheck="false" placeholder="https://docs.google.com/spreadsheets/d/...">
+            <label for="tab">Tab name</label>
+            <input id="tab" type="text" value="Expenses" maxlength="40" autocomplete="off">
+            <button id="playSheet" type="button">Summon from my sheet</button>
+          </div>
+        </details>
+        <p id="error" role="alert"></p>
+      </div>
+      <div class="card">
+        <h2>How to play</h2>
+        <ul class="rules">
+          <li><span><kbd>←</kbd><kbd>→</kbd> or <kbd>A</kbd><kbd>D</kbd></span> move the exorcist</li>
+          <li><span><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd></span> pick a spell: Work, Personal, Unknown</li>
+          <li><span><kbd>Space</kbd></span> hold to cast. The first spell to hit decides a demon's category</li>
+          <li><i class="dot bad"></i> Bigger demons take more hits and fall slower</li>
+          <li><i class="dot gold"></i> A demon that crosses the Ledger Line costs Sanity, then returns once</li>
+          <li><i class="dot good"></i> Omens glow near the line. Follow them for bonus points, or trust your own judgement</li>
+          <li><span><kbd>P</kbd></span> pause. Touch screens get on-screen buttons</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="game" hidden aria-label="Expense Exorcist game">
+      <div class="hud">
+        <div class="stat"><span>Banished</span><strong id="banished">0 / 0</strong></div>
+        <div class="stat"><span>Sanity</span><strong id="sanity" role="img" aria-label="Sanity 5 of 5"></strong></div>
+        <div class="stat"><span>Score</span><strong id="score">0</strong></div>
+        <div class="stat"><span>Ledger sync</span><strong id="sync" aria-live="off">Offline</strong></div>
+      </div>
+      <div class="cabinet">
+        <canvas id="stage" width="480" height="640" role="img" aria-label="Haunted manor. Expense demons drift down. Move, pick a spell and cast to sort each one into Work, Personal or Unknown.">
+          Your browser does not support the game canvas.
+        </canvas>
+      </div>
+      <div class="spellbar" role="group" aria-label="Choose your spell">
+        <button type="button" data-cat="work" aria-pressed="true"><kbd>1</kbd> Work</button>
+        <button type="button" data-cat="personal" aria-pressed="false"><kbd>2</kbd> Personal</button>
+        <button type="button" data-cat="unknown" aria-pressed="false"><kbd>3</kbd> Unknown</button>
+      </div>
+      <div class="pad">
+        <button type="button" data-key="arrowleft" aria-label="Move left (hold)">Left</button>
+        <button type="button" data-key=" " class="fire" aria-label="Cast spell (hold)">Cast</button>
+        <button type="button" data-key="arrowright" aria-label="Move right (hold)">Right</button>
+      </div>
+      <p id="caption" class="tale"></p>
+      <p id="status" role="status" aria-live="polite"></p>
+      <div class="row">
+        <button id="pause" type="button">Pause</button>
+        <button id="finish" type="button">Finish and see the report</button>
+      </div>
+    </section>
+
+    <section id="done" hidden aria-labelledby="done-h">
+      <div class="card ledger">
+        <h2 id="done-h" tabindex="-1">The ledger is closed</h2>
+        <p id="endText"></p>
+        <table>
+          <caption class="sr">Expenses by category</caption>
+          <thead><tr><th scope="col">Category</th><th scope="col">Count</th><th scope="col">Total</th></tr></thead>
+          <tbody id="totals"></tbody>
+        </table>
+        <p id="leftover"></p>
+        <h3>Anomalies to review</h3>
+        <ul id="flagged" class="chips"></ul>
+        <p id="syncDone" role="status"></p>
+        <button id="retry" type="button" hidden>Retry sheet sync</button>
+        <a id="download" class="btn primary" download="exorcism-report.csv">Download the report (CSV)</a>
+        <button id="again" type="button">Play again</button>
+        <p id="doneError" role="alert"></p>
+      </div>
+    </section>
+  </main>
+</div>
+</div>
+<script type="module" src="game.js"></script>
+</body>
+</html>
