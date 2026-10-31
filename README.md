@@ -63,4 +63,4 @@ If Sheets returns a "insufficient scopes" error on Cloud Run, use a service acco
 - **Testing:** `npm test` covers CSV parsing, omens, story tiers, reports, the game engine (`public/engine.js` is pure logic: spawning, hits, slips, win and lose), the Sheets client (mocked) and the API.
 - **Accessibility:** full keyboard play, pause (also automatic when the tab is hidden), labelled spell buttons with `aria-pressed`, a live-region narration of every banish and slip, visible focus rings, spells and demons distinguished by shape and letter as well as colour, calm mode and `prefers-reduced-motion` support.
 - **Efficiency:** one batched Gemini call per ledger, background Sheets writes are debounced and batched (one request for up to 100 rows), no client framework.
->>>>>>> c03581c (Done)
+
