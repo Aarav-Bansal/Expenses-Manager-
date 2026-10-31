@@ -64,7 +64,17 @@ export function createApp({ lookup = makeGeminiLookup(), sheets = makeSheetsFrom
   return app;
 }
 
+
+const app = createApp();
+
+
+export default app;
+
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const port = process.env.PORT || 8080;
-  createApp().listen(port, () => console.log(`Expense Exorcist listening on ${port}`));
+  app.listen(port, () => {
+    console.log(`Expense Exorcist listening on ${port}`);
+  });
 }
+
