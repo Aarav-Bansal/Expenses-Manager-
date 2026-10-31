@@ -1,7 +1,5 @@
-<<<<<<< HEAD
 # Expenses-Manager-
-=======
-# Expense Exorcist
+
 
 A 2D arcade horror game where every demon is an unreviewed expense. A terrifying specter labelled `AMAZON.COM $42.19` drifts down the haunted manor. Blast it with the **Work**, **Personal** or **Unknown** spell, and your choice becomes the real categorisation, written back to your expense ledger in the background while you play.
 
